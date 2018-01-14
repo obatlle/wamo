@@ -6,7 +6,7 @@ class Link extends Component {
     console.log(this.props.link.description);
     return (
       <View>
-        <Text>{this.props.link.description} ({this.props.link.url})</Text>
+        <Text>{this.props.link.color} ({this.props.link.color})</Text>
       </View>
     )
   }

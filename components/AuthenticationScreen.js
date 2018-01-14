@@ -65,6 +65,8 @@ class AuthenticationScreen extends Component {
           password: token,
           profilePicture: profile.picture.data.url });
 
+        console.log(profile.picture.data.url);
+
         this._storeAuthTokensLocally( token, 'facebook' );
         console.log('Token'+token);
         const { name, email, password } = this.state;

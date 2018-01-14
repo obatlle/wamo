@@ -24,7 +24,7 @@ const MainStack = StackNavigator(
     },
   },
   {
-    initialRouteName: 'Links',
+    initialRouteName: 'Authentication',
     cardStyle: {
       backgroundColor: Colors.almostWhite,
     },

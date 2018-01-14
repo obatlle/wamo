@@ -18,7 +18,7 @@ class LinkList extends Component {
     return <Text>Error</Text>
   }
   // 3
-  const linksToRender = this.props.allLinksQuery.allLinks
+  const linksToRender = this.props.allLinksQuery.allCars
 
 
     return (
@@ -36,11 +36,9 @@ class LinkList extends Component {
 // 1
 const ALL_LINKS_QUERY = gql`
   query AllLinksQuery {
-    allLinks {
+    allCars {
       id
-      createdAt
-      url
-      description
+      color
     }
   }
 `
