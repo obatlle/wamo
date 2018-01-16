@@ -4,17 +4,17 @@ import { StackNavigator } from 'react-navigation';
 
 import AuthenticationScreen from './AuthenticationScreen';
 import Colors from '../constants/Colors';
-import CreateLinkScreen from './CreateLinkScreen';
-import LinksScreen from './LinksScreen';
+import PostingScreen from './PostingScreen';
+import MapScreen from './MapScreen';
 import SearchScreen from './SearchScreen';
 
 const MainStack = StackNavigator(
   {
-    Links: {
-      screen: LinksScreen,
+    MapScreen: {
+      screen: MapScreen,
     },
-    CreateLink: {
-      screen: CreateLinkScreen,
+    PostingScreen: {
+      screen: PostingScreen,
     },
     Authentication: {
       screen: AuthenticationScreen,

@@ -41,7 +41,7 @@ class AuthenticationScreen extends Component {
   state = {
     email: '',
     password: '',
-    name: '',
+    username: '',
     profilePicture: null,
     isload: false
   };
@@ -60,7 +60,7 @@ class AuthenticationScreen extends Component {
         const profile = await response.json();
 
         this.setState({
-          name: profile.first_name +' '+ profile.last_name,
+          username: profile.first_name +' '+ profile.last_name,
           email: profile.email,
           password: token,
           profilePicture: profile.picture.data.url });
@@ -69,10 +69,10 @@ class AuthenticationScreen extends Component {
 
         this._storeAuthTokensLocally( token, 'facebook' );
         console.log('Token'+token);
-        const { name, email, password } = this.state;
+        const { username, email, password } = this.state;
         const result = await this.props.createUserMutation({
           variables: {
-            name,
+            username,
             email,
             password,
           },
@@ -88,7 +88,7 @@ class AuthenticationScreen extends Component {
         });
 
         const { navigate } = this.props.navigation;
-        navigate('Search');
+        navigate('MapScreen');
 
         //this._updateUserProfile();
         break;
@@ -115,7 +115,7 @@ class AuthenticationScreen extends Component {
     switch (type) {
       case 'success': {
         this.setState({
-          name: user.givenName +' '+ user.familyName,
+          username: user.givenName +' '+ user.familyName,
           email: user.email,
           password: idToken,
           profilePicture: user.photoUrl });
@@ -123,10 +123,10 @@ class AuthenticationScreen extends Component {
 
           this._storeAuthTokensLocally( idToken, 'google' );
           console.log('Token'+idToken);
-          const { name, email, password } = this.state;
+          const { username, email, password } = this.state;
           const result = await this.props.createUserMutation({
             variables: {
-              name,
+              username,
               email,
               password,
             },
@@ -142,7 +142,7 @@ class AuthenticationScreen extends Component {
           });
 
           const { navigate } = this.props.navigation;
-          navigate('Search');
+          navigate('MapScreen');
         //this._updateUserProfile();
         break;
       }
@@ -187,7 +187,7 @@ class AuthenticationScreen extends Component {
               const profile = await response.json();
               console.log(profile)
               const { navigate } = this.props.navigation;
-              navigate('Search');
+              navigate('MapScreen');
 
             }else if (network=='google'){
               //Don't support memorizing the Google login token yet
@@ -230,11 +230,11 @@ class AuthenticationScreen extends Component {
             {showSignUpForm && (
               <StyledTextInput
                 autoFocus={true}
-                onChangeText={name => this.setState({ name })}
+                onChangeText={username => this.setState({ username })}
                 onSubmitEditing={() => this._emailInput.focus()}
                 type="text"
                 placeholder="Your name"
-                value={this.state.name}
+                value={this.state.username}
               />
             )}
             <StyledTextInput
@@ -303,8 +303,8 @@ class AuthenticationScreen extends Component {
 
   _confirm = async () => {
     const signUp = inSignUpState(this.props.navigation.state);
-    const { name, email, password } = this.state;
-    if (!email || !password || (signUp && !name)) {
+    const { username, email, password } = this.state;
+    if (!email || !password || (signUp && !username)) {
       alert('Please fill in all fields.');
       return;
     }
@@ -313,7 +313,7 @@ class AuthenticationScreen extends Component {
       if (signUp) {
         const result = await this.props.createUserMutation({
           variables: {
-            name,
+            username,
             email,
             password,
           },
@@ -362,12 +362,12 @@ const styles = StyleSheet.create({
 
 const CREATE_USER_MUTATION = gql`
   mutation CreateUserMutation(
-    $name: String!
+    $username: String!
     $email: String!
     $password: String!
   ) {
     createUser(
-      name: $name
+      username: $username
       authProvider: { email: { email: $email, password: $password } }
     ) {
       id

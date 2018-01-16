@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight , Dimensions, TextInput, Image} from 'react-native';
+import { TouchableWithoutFeedback,Keyboard,StyleSheet, Text, View, TouchableHighlight , Dimensions, TextInput, Image} from 'react-native';
 
 import MapView from 'react-native-maps'
+
+import locationImg from '../assets/locationImg.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -81,61 +83,99 @@ const LATITUDE = 41.3818;
 const LONGITUDE = 2.1685;
 const LATITUDE_DELTA = 2.2;
 const LONGITUDE_DELTA = 2.2;
+const SPACE = 0.01;
+
+function log(eventName, e) {
+  console.log(eventName, e.nativeEvent);
+}
 
 
 class LinksScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' };
+    this.state = { text: '' ,
+                  a: {
+                        latitude: LATITUDE + SPACE,
+                        longitude: LONGITUDE + SPACE,
+                      },
+                  b: {
+                    latitude: LATITUDE - SPACE,
+                    longitude: LONGITUDE - SPACE,
+                  },
+                };
   }
+
+  onMapPress(e) {
+   this.setState({
+     a: {
+           latitude: e.nativeEvent.coordinate.latitude,
+           longitude: e.nativeEvent.coordinate.longitude,
+         },
+   });
+ }
 
   render() {
 
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={styles.container}>
-      <MapView
-          provider={MapView.PROVIDER_GOOGLE}
-          style={styles.map}
-          scrollEnabled={true}
-          zoomEnabled={true}
-          pitchEnabled={false}
-          rotateEnabled={false}
-          customMapStyle={customStyle}
-          initialRegion={{
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }}
-        />
-        <View style={styles.profileSearchContainer}>
-          <View style={styles.profileSearchAlign}>
-            <Image
-              style={styles.profileView}
-              source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}
-            />
-            <View style={styles.searchView}>
-              <TextInput
-                style={styles.searchText}
-                placeholder='Where to?'
-                placeholderTextColor ='#E7E7E7'
-                onChangeText={(text) => this.setState({text})}
-                value={this.state.text}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.container}>
+        <MapView
+            provider={MapView.PROVIDER_GOOGLE}
+            style={styles.map}
+            scrollEnabled={true}
+            zoomEnabled={true}
+            pitchEnabled={false}
+            rotateEnabled={false}
+            customMapStyle={customStyle}
+            onPress={(e) => this.onMapPress(e)}
+            initialRegion={{
+              latitude: LATITUDE,
+              longitude: LONGITUDE,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            }}>
+            <MapView.Marker
+              coordinate={this.state.a}
+              onSelect={(e) => log('onSelect', e)}
+              onDrag={(e) => log('onDrag', e)}
+              onDragStart={(e) => log('onDragStart', e)}
+              onDragEnd={(e) => log('onDragEnd', e)}
+              onPress={(e) => log('onPress', e)}
+              image={locationImg}
+              draggable/>
+          </MapView>
+          <View style={styles.profileSearchContainer}>
+            <View style={styles.profileSearchAlign}>
+              <Image
+                style={styles.profileView}
+                source={{uri: 'https://randomuser.me/api/portraits/women/11.jpg'}}
               />
+              <View style={styles.searchView}>
+                <TextInput
+                  style={styles.searchText}
+                  placeholder='Where to?'
+                  placeholderTextColor ='#E7E7E7'
+                  onChangeText={(text) => this.setState({text})}
+                  value={this.state.text}
+                  onSubmitEditing={()=>navigate('Search')}
+                />
+              </View>
             </View>
           </View>
+          <TouchableHighlight style={styles.addTripContainer} underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('PostingScreen')}>
+            <View style={styles.addTripAlign}>
+              <Text style={styles.addTripText}>Post a trip</Text>
+              <View style={styles.addTripShadow}>
+                <View style={styles.addTripView}>
+                  <Text style={styles.addTripSymbol}>+</Text>
+                </View>
+              </View>
+            </View>
+          </TouchableHighlight>
         </View>
-        <TouchableHighlight style={styles.addTripContainer} underlayColor='rgba(52, 52, 52, 0.8)' onPress={()=> navigate('Search')}>
-          <View style={styles.addTripAlign}>
-            <Text style={styles.addTripText}>Post a trip</Text>
-            <View style={styles.addTripView}>
-              <Text style={styles.addTripSymbol}>+</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -181,15 +221,12 @@ const styles = StyleSheet.create({
         height: 50,
         left: 30,
         borderRadius:25,
-        overflow: 'hidden',
         backgroundColor: 'white',
-        shadowColor: 'black',
-        shadowOffset: {
-          width: 0,
-          height: 3
-        },
-        shadowRadius: 5,
-        shadowOpacity: 1.0
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 1,
     },
     searchText:{
       marginTop:10,
@@ -206,7 +243,7 @@ const styles = StyleSheet.create({
       },
       addTripAlign: {
         flex:1,
-        flexDirection: 'row'
+        flexDirection: 'row',
       },
       addTripText: {
         marginTop: 16 ,
@@ -221,6 +258,13 @@ const styles = StyleSheet.create({
           borderRadius:29,
           overflow: 'hidden',
           backgroundColor: '#5D287F',
+      },
+      addTripShadow:{
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 1,
       },
       addTripSymbol: {
         marginTop: 4 ,

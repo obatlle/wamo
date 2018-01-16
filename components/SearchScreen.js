@@ -49,7 +49,7 @@ class SearchScreen extends Component {
         <Button title="+" onPress={increment} />
         <Button title="-" onPress={decrement} />
         <LinkList />
-        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0.8)' onPress={()=> navigate('CreateLink')}>
+        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0.8)' onPress={()=> navigate('PostingScreen')}>
           <View>
             <Text >Post a new Link from here</Text>
           </View>

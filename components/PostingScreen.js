@@ -4,7 +4,7 @@ import { getUser } from 'react-native-authentication-helpers';
 
 import { graphql, gql } from 'react-apollo';
 
-class CreateLinkScreen extends Component {
+class PostingScreen extends Component {
 
   state = {
     description: '',
@@ -77,7 +77,7 @@ const CREATE_LINK_MUTATION = gql`
 `
 
 // 3
-export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(CreateLinkScreen)
+export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(PostingScreen)
 
 
 const styles = StyleSheet.create({

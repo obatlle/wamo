@@ -1,5 +1,5 @@
 # projectId: cjc9fjhy84z7801752ikhzrsl
-# version: 3
+# version: 5
 
 type File @model {
   contentType: String!
@@ -19,7 +19,6 @@ type User @model {
   username: String
   firstName: String
   lastName: String
-  email: String @isUnique
   userImage: String
   status: Int
   loginType: String
@@ -28,10 +27,11 @@ type User @model {
   countryId: String
   latitude: Float
   longitude: Float
-  password: String
   cars: [Car!]! @relation(name: "CarUser")
   tripsJoined: [TripJoined!]! @relation(name: "JoinedTripsUser")
   tripsCreated: [TripCreated!]! @relation(name: "CreatedTripUser")
+  email: String @isUnique
+  password: String
 }
 
 type TripJoined @model {
