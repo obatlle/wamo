@@ -10,7 +10,7 @@ export default class Wamo extends Component {
     return (
       <View style={styles.container}>
         <RootStackNavigator />
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
       </View>
     );
   }
