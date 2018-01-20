@@ -3,7 +3,7 @@ import { TouchableWithoutFeedback,Keyboard,StyleSheet, Text, View, TouchableHigh
 
 import MapView from 'react-native-maps'
 
-import locationImg from '../assets/locationImg.png';
+import origin from '../assets/origin.png';
 import logo from '../assets/logo.png';
 import polygon from '../assets/Polygon.png'
 import inversePolygon from '../assets/InversePolygon.png'
@@ -223,7 +223,7 @@ class LinksScreen extends Component {
                 onDragStart={(e) => log('onDragStart', e)}
                 onDragEnd={(e) => log('onDragEnd', e)}
                 onPress={(e) => log('onPress', e)}
-                image={locationImg}
+                image={origin}
                 draggable/>
             </MapView>
             <Image
