@@ -96,6 +96,8 @@ function log(eventName, e) {
 }
 
 
+const DEFAULT_PADDING = {  top: 0, right: 0, bottom: 0, left: 0 };
+
 class LinksScreen extends Component {
 
 
@@ -124,18 +126,44 @@ class LinksScreen extends Component {
                     latitude: LATITUDE - SPACE,
                     longitude: LONGITUDE - SPACE,
                   },
+                  region: {
+                    latitude: LATITUDE,
+                    longitude: LONGITUDE,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
+                  },
                 };
+
+
   }
 
-  onMapPress(e) {
+
+
+  onRegionChange(region) {
+    try{
+      this.setState({ region })
+    } catch (error) {
+   // Error changing location
+   }
+  }
+
+
+
+
+  onMapPress(e,lat,lng,lat_delta,lng_delta) {
     Keyboard.dismiss
-    console.log('biip')
     try{
      this.setState({
        a: {
              latitude: e.nativeEvent.coordinate.latitude,
              longitude: e.nativeEvent.coordinate.longitude,
            },
+      region:{
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: lat_delta,
+        longitudeDelta: lng_delta,
+      }
      });
    } catch (error) {
   // Error changing location
@@ -180,7 +208,7 @@ class LinksScreen extends Component {
    const { navigate } = this.props.navigation;
    return (
      <Animated.View style={[styles.favoriteIcon, {transform}]}>
-     <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('PostingScreen')}>
+     <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=>navigate('PostingScreen')}>
        <View style={styles.addTripAlign}>
          <Text style={styles.addTripText}>Post a trip</Text>
          <View style={styles.addTripShadow}>
@@ -202,6 +230,7 @@ class LinksScreen extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
           <MapView
+              ref={ref => { this.map = ref } }
               provider={MapView.PROVIDER_GOOGLE}
               style={styles.map}
               scrollEnabled={true}
@@ -209,13 +238,9 @@ class LinksScreen extends Component {
               pitchEnabled={false}
               rotateEnabled={false}
               customMapStyle={customStyle}
-              onPress={(e) => this.onMapPress(e)}
-              initialRegion={{
-                latitude: LATITUDE,
-                longitude: LONGITUDE,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              }}>
+              onPress={(e) => this.onMapPress(e,this.state.region.latitude,this.state.region.longitude,this.state.region.latitudeDelta,this.state.region.longitudeDelta)}
+              region={this.state.region}
+              onRegionChange={(e) =>this.onRegionChange(e)}>
               <MapView.Marker
                 coordinate={this.state.a}
                 onSelect={(e) => log('onSelect', e)}
