@@ -17,14 +17,6 @@ import destination from '../assets/destination.png';
 import leftIcon from '../assets/leftIcon.png';
 import rightIcon from '../assets/rightIcon.png';
 
-import PostingScreenStep1 from './PostingScreenStep1'
-import PostingScreenStep2 from './PostingScreenStep2'
-
-import { connect } from 'redux-zero/react';
-import actions from '../app/actions';
-
-const mapToProps = ({ postingStep }) => ({ postingStep });
-
 const { width, height } = Dimensions.get('window');
 
 class PostingScreen extends Component {
@@ -64,30 +56,67 @@ class PostingScreen extends Component {
   render() {
 
     const { navigate } = this.props.navigation;
-    const { postingStep, moveNextStep, rebootSteps, movePreviousStep } = this.props;
 
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <View style={styles.navbarView}>
-        {this.props.postingStep==1? (
-          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
-            <Image style={{alignSelf: 'center', height:25, width:25, left:10}} source={leftIcon}/>
-          </TouchableHighlight>
-        ):(
-          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={movePreviousStep}>
-            <Image style={{alignSelf: 'center', height:25, width:25, left:10}} source={leftIcon}/>
-          </TouchableHighlight>
-        )}
-          <Text style={styles.screenTitle}>Posting a Trip</Text>
-          <View style={{width:25}}/>
+      <View style={styles.contentCardView}>
+        <View>
+          <Text style={styles.textHeader}>Select the
+            <Text style={[styles.textHeader,styles.textOriginColor]}> origin
+              <Text style={styles.textHeader}> and the
+                <Text style={[styles.textHeader,styles.textDestinationColor]}> destination
+                  <Text style={styles.textHeader}> of your trip:
+                  </Text>
+                </Text>
+              </Text>
+            </Text>
+          </Text>
         </View>
-        {this.props.postingStep==1? (
-          <PostingScreenStep1 navigation={this.props.navigation}/>
-        ):(
-          <PostingScreenStep2 navigation={this.props.navigation}/>
-        )}
+        <View style={styles.originAlign}>
+          <View style={styles.originFrom}>
+            <Image style={{alignSelf: 'center', height:25, width:25}} source={origin}/>
+            <Text style={styles.fromText}>From:</Text>
+          </View>
+        </View>
+        <View style={styles.fromToLine}>
+        </View>
+        <View style={[styles.originAlign, {top:55}]}>
+          <View style={styles.originFrom}>
+            <Image style={{alignSelf: 'center', height:25, width:25}} source={destination}/>
+            <Text style={styles.fromText}>To:</Text>
+          </View>
+        </View>
+        <View style={{top:80, height:height-320}}>
+          <View style={{height:height-385-this.state.keyboardHeight}}>
+          </View>
+          <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
+            {this.state.destinationText.length>0 && this.state.originText.length>0 ?  (
+            <View style={styles.nextButton}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
+                <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                  <Text style={styles.nextText}>Next</Text>
+                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                </View>
+              </TouchableHighlight>
+            </View>
+            ):(
+            <View style={styles.nextButtonDisabled}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' >
+                <View  style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                  <Text style={styles.nextText}>Next</Text>
+                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                </View>
+              </TouchableHighlight>
+            </View>
+          )}
+          </View>
+          <View style={styles.stepsAlign}>
+            <View style={styles.stepSelected}/>
+            <View style={styles.stepView}/>
+            <View style={styles.stepView}/>
+          </View>
+        </View>
       </View>
+
     )
   }
 
@@ -96,28 +125,10 @@ class PostingScreen extends Component {
 
 
 
-export default connect(mapToProps, actions)(PostingScreen)
+export default (PostingScreen)
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    backgroundColor:'#5D287F'
-  },
-  navbarView:{
-    marginTop:20,
-    width:width,
-    height: 70,
-    flexDirection:'row',
-    alignItems:'center' ,
-    justifyContent: 'space-between'
-  },
-  screenTitle:{
-    textAlign:'center',
-    fontSize:24,
-    fontWeight:'800',
-    color:'white',
-  },
   contentCardView:{
     borderTopLeftRadius:20,
     borderTopRightRadius:20,

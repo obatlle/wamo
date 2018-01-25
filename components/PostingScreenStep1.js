@@ -17,9 +17,6 @@ import destination from '../assets/destination.png';
 import leftIcon from '../assets/leftIcon.png';
 import rightIcon from '../assets/rightIcon.png';
 
-import PostingScreenStep1 from './PostingScreenStep1'
-import PostingScreenStep2 from './PostingScreenStep2'
-
 import { connect } from 'redux-zero/react';
 import actions from '../app/actions';
 
@@ -49,45 +46,111 @@ class PostingScreen extends Component {
 
   _keyboardDidHide = () => {
     this.setState({inputTextFocus:false})
-    console.log(this.state.inputTextFocus)
   }
 
   _keyboardDidShow= (e) => {
     this.setState({keyboardHeight:e.endCoordinates.height})
-    console.log(height)
-    console.log(e.endCoordinates.height)
 
 }
+
 
 
 
   render() {
 
     const { navigate } = this.props.navigation;
-    const { postingStep, moveNextStep, rebootSteps, movePreviousStep } = this.props;
+    const { postingStep, moveNextStep, rebootSteps } = this.props;
 
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <View style={styles.navbarView}>
-        {this.props.postingStep==1? (
-          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
-            <Image style={{alignSelf: 'center', height:25, width:25, left:10}} source={leftIcon}/>
-          </TouchableHighlight>
-        ):(
-          <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={movePreviousStep}>
-            <Image style={{alignSelf: 'center', height:25, width:25, left:10}} source={leftIcon}/>
-          </TouchableHighlight>
-        )}
-          <Text style={styles.screenTitle}>Posting a Trip</Text>
-          <View style={{width:25}}/>
+      <View style={styles.contentCardView}>
+        <View>
+          <Text style={styles.textHeader}>Select the
+            <Text style={[styles.textHeader,styles.textOriginColor]}> origin
+              <Text style={styles.textHeader}> and the
+                <Text style={[styles.textHeader,styles.textDestinationColor]}> destination
+                  <Text style={styles.textHeader}> of your trip:
+                  </Text>
+                </Text>
+              </Text>
+            </Text>
+          </Text>
         </View>
-        {this.props.postingStep==1? (
-          <PostingScreenStep1 navigation={this.props.navigation}/>
-        ):(
-          <PostingScreenStep2 navigation={this.props.navigation}/>
-        )}
+        <View style={styles.originAlign}>
+          <View style={styles.originFrom}>
+            <Image style={{alignSelf: 'center', height:25, width:25}} source={origin}/>
+            <Text style={styles.fromText}>From:</Text>
+          </View>
+          <TextInput
+            style={styles.fromTextInput}
+            placeholder='from...'
+            placeholderTextColor ='#E7E7E7'
+            clearButtonMode='always'
+            onFocus={() => this.setState({inputTextFocus:true})}
+            onChangeText={(originText) => this.setState({originText})}
+            value={this.state.originText}
+            onSubmitEditing={(originText) => this.setState({originText})}
+          />
+        </View>
+        <View style={styles.fromToLine}>
+        </View>
+        <View style={[styles.originAlign, {top:55}]}>
+          <View style={styles.originFrom}>
+            <Image style={{alignSelf: 'center', height:25, width:25}} source={destination}/>
+            <Text style={styles.fromText}>To:</Text>
+          </View>
+          <TextInput
+            style={styles.fromTextInput}
+            placeholder='Destination'
+            placeholderTextColor ='#E7E7E7'
+            clearButtonMode='always'
+            autoFocus={true}
+            onFocus={() => this.setState({inputTextFocus:true})}
+            onChangeText={(destinationText) => this.setState({destinationText})}
+            value={this.state.destinationText}
+            onSubmitEditing={(destinationText) => this.setState({destinationText})}
+          />
+        </View>
+        <View style={{top:80, height:height-320}}>
+          <View style={{height:height-385-this.state.keyboardHeight}}>
+          </View>
+          <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
+            {this.state.destinationText.length>0 && this.state.originText.length>0 ?  (
+            <View style={styles.nextButton}>
+              {this.props.postingStep<6? (
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
+              <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                <Text style={styles.nextText}>Next</Text>
+                <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+              </View>
+            </TouchableHighlight>
+            ):(
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={rebootSteps}>
+              <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                <Text style={styles.nextText}>Next</Text>
+                <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+              </View>
+            </TouchableHighlight>
+            )}
+            </View>
+            ):(
+            <View style={styles.nextButtonDisabled}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' >
+                <View  style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                  <Text style={styles.nextText}>Next</Text>
+                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                </View>
+              </TouchableHighlight>
+            </View>
+          )}
+          </View>
+          <View style={styles.stepsAlign}>
+            <View style={styles.stepSelected}/>
+            <View style={styles.stepView}/>
+            <View style={styles.stepView}/>
+          </View>
+        </View>
       </View>
+
     )
   }
 

@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 import PostingScreen from './PostingScreen';
 import MapScreen from './MapScreen';
 import SearchScreen from './SearchScreen';
-import SlidingScreen from './SlidingScreen';
+
 
 const MainStack = StackNavigator(
   {
@@ -16,9 +16,6 @@ const MainStack = StackNavigator(
     },
     PostingScreen: {
       screen: PostingScreen,
-    },
-    SlidingScreen: {
-      screen: SlidingScreen,
     },
     Authentication: {
       screen: AuthenticationScreen,
