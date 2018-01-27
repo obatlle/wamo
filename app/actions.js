@@ -3,7 +3,7 @@ export default actions = store => ({
   decrement: state => ({ count: state.count - 1 }),
   moveNextStep: state => ({postingStep: state.postingStep+1}),
   movePreviousStep: state => ({postingStep: state.postingStep-1}),
-  rebootSteps: state => ({postingStep: Math.min(state.postingStep,0)}),
+  rebootSteps: state => ({postingStep: state.postingStep-4}),
 });
 
 

@@ -42,6 +42,7 @@ class PostingScreenStep1 extends Component {
   }
 
   componentWillUnmount () {
+    dismissKeyboard();
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
   }

@@ -14,6 +14,9 @@ const { width, height } = Dimensions.get('window');
 
 import SlidingUpPanel from 'rn-sliding-up-panel'
 
+import { connect } from 'redux-zero/react';
+import actions from '../app/actions';
+
 
 const customStyle = [
     {
@@ -92,6 +95,8 @@ const LONGITUDE = 2.1685;
 const LATITUDE_DELTA = 2.2;
 const LONGITUDE_DELTA = 2.2;
 const SPACE = 0.01;
+
+const mapToProps = ({ postingStep }) => ({ postingStep });
 
 function log(eventName, e) {
   console.log(eventName, e.nativeEvent);
@@ -213,9 +218,10 @@ class LinksScreen extends Component {
    const transform = [{scale: draggedValue}]
 
    const { navigate } = this.props.navigation;
+   const { postingStep, moveNextStep, rebootSteps } = this.props;
    return (
      <Animated.View style={[styles.favoriteIcon, {transform}]}>
-     <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=>navigate('PostingScreen')}>
+     <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('PostingScreen'); moveNextStep()}}>
        <View style={styles.addTripAlign}>
          <Text style={styles.addTripText}>Post a trip</Text>
          <View style={styles.addTripShadow}>
@@ -232,7 +238,7 @@ class LinksScreen extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    
+
     return (
       <View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -346,7 +352,7 @@ class LinksScreen extends Component {
   }
 }
 
-export default LinksScreen;
+export default connect(mapToProps, actions) (LinksScreen);
 
 const styles = StyleSheet.create({
   container: {

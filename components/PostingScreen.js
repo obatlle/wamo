@@ -73,7 +73,7 @@ class PostingScreen extends Component {
         <View style={styles.navbarView}>
         {this.props.postingStep==1? (
           <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
+            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {movePreviousStep();navigate('MapScreen')}}>
               <FontAwesome name="arrow-left" size={25} color="white"/>
             </TouchableHighlight>
           </View>
@@ -98,7 +98,13 @@ class PostingScreen extends Component {
               {this.props.postingStep==3? (
                 <PostingScreenStep3 navigation={this.props.navigation}/>
               ):(
-                <PostingScreenStep4 navigation={this.props.navigation}/>
+                <View>
+                  {this.props.postingStep==4?(
+                    <PostingScreenStep4 navigation={this.props.navigation}/>
+                  ):(
+                    <View style={{backgroundColor:'white', flex:1}}></View>
+                  )}
+                </View>
               )}
               </View>
             )}
