@@ -12,20 +12,31 @@ import { StyleSheet,
   TouchableHighlight,
   KeyboardAvoidingView } from 'react-native';
 
-import origin from '../assets/origin.png';
-import destination from '../assets/destination.png';
-import leftIcon from '../assets/leftIcon.png';
-import rightIcon from '../assets/rightIcon.png';
+
+import { CalendarList} from 'react-native-calendars';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import { connect } from 'redux-zero/react';
+import actions from '../app/actions';
+
+const mapToProps = ({ postingStep }) => ({ postingStep });
 
 const { width, height } = Dimensions.get('window');
 
-class PostingScreen extends Component {
+
+
+class PostingScreenStep2 extends Component {
 
   state = {
-    originText:'Barcelona',
     destinationText:'',
-    inputTextFocus:true,
-    keyboardHeight:0
+    keyboardHeight:0,
+    markedDays: '',
+    currentDate: new Date(),
+    isDateTimePickerVisible: false,
+    departureTime:'',
+    initialHour: new Date('2018-01-29T08:00:00.000Z')
   }
 
   componentWillMount() {
@@ -51,50 +62,96 @@ class PostingScreen extends Component {
 
 }
 
+  onDayPress(day) {
+    this.setState({
+    markedDays: day.dateString,
+    isDateTimePickerVisible: true
+    });
+
+  }
+
+  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
+  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
+
+  _handleDatePicked = date => {
+    hour=date.getHours()
+    minute=date.getMinutes()
+
+    if (hour<10){hour='0'+hour}
+    if (minute<10){minute='0'+minute}
+
+    dateString = this.state.markedDays+" "+hour+":"+minute+":00"
+  , reggie = /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/
+  , [, year, month, day, hours, minutes, seconds] = reggie.exec(dateString)
+  , dateObject = new Date(year, month-1, day, hours, minutes, seconds);
+  console.log(dateObject)
+  this.setState({
+    departureTime: dateObject,
+  });
+    this._hideDateTimePicker();
+  };
+
 
 
   render() {
 
     const { navigate } = this.props.navigation;
+    const { postingStep, moveNextStep, rebootSteps } = this.props;
 
     return (
       <View style={styles.contentCardView}>
         <View>
-          <Text style={styles.textHeader}>Select the
-            <Text style={[styles.textHeader,styles.textOriginColor]}> origin
-              <Text style={styles.textHeader}> and the
-                <Text style={[styles.textHeader,styles.textDestinationColor]}> destination
-                  <Text style={styles.textHeader}> of your trip:
-                  </Text>
-                </Text>
-              </Text>
+          <Text style={[styles.textHeader,styles.textOriginColor]}>When
+            <Text style={styles.textHeader}> are you going to travel?
             </Text>
           </Text>
         </View>
-        <View style={styles.originAlign}>
-          <View style={styles.originFrom}>
-            <Image style={{alignSelf: 'center', height:25, width:25}} source={origin}/>
-            <Text style={styles.fromText}>From:</Text>
-          </View>
+        <View style={{top:50,height:370}}>
+          <CalendarList
+            style={{paddingTop: 5,
+                    height:370}}
+            minDate={this.state.currentDate}
+            // Callback which gets executed when visible months change in scroll view. Default = undefined
+            onVisibleMonthsChange={(months) => {console.log('now these months are visible', months);}}
+            // Max amount of months allowed to scroll to the past. Default = 50
+            pastScrollRange={0}
+            // Max amount of months allowed to scroll to the future. Default = 50
+            futureScrollRange={12}
+            // Enable or disable scrolling of calendar list
+            scrollEnabled={true}
+            // Enable or disable vertical scroll indicator. Default = false
+            showScrollIndicator={true}
+            onDayPress={(day) => {this.onDayPress(day)}}
+            markedDates={{[this.state.markedDays]: {selected: true}}}
+            theme={{
+              selectedDayBackgroundColor: '#007D8C',
+              selectedDayTextColor: 'white',
+              todayTextColor: '#FCC745',
+            }}
+          />
+          <DateTimePicker
+            isVisible={this.state.isDateTimePickerVisible}
+            onConfirm={this._handleDatePicked}
+            onCancel={this._hideDateTimePicker}
+            mode={'time'}
+            titleIOS={'At what time are you going to pick up your passengers?'}
+            titleStyle={[styles.textHeader,{top:0, fontSize:18, fontWeight:'400',}]}
+            date={this.state.initialHour}
+            cancelTextIOS={"I don't know yet"}
+          />
         </View>
-        <View style={styles.fromToLine}>
-        </View>
-        <View style={[styles.originAlign, {top:55}]}>
-          <View style={styles.originFrom}>
-            <Image style={{alignSelf: 'center', height:25, width:25}} source={destination}/>
-            <Text style={styles.fromText}>To:</Text>
-          </View>
-        </View>
-        <View style={{top:80, height:height-320}}>
-          <View style={{height:height-385-this.state.keyboardHeight}}>
+        <View style={{top:85, height:height-772}}>
+          <View style={{height:height-772-this.state.keyboardHeight}}>
           </View>
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
-            {this.state.destinationText.length>0 && this.state.originText.length>0 ?  (
+            {this.state.markedDays.length>0 ?  (
             <View style={styles.nextButton}>
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
                 <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
                   <Text style={styles.nextText}>Next</Text>
-                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                  <View style={{left:30, top:20}}>
+                    <FontAwesome name="arrow-right" size={25} color="white"/>
+                  </View>
                 </View>
               </TouchableHighlight>
             </View>
@@ -103,7 +160,9 @@ class PostingScreen extends Component {
               <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' >
                 <View  style={{flexDirection:'row', flex:1, alignItems:'center'}}>
                   <Text style={styles.nextText}>Next</Text>
-                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                  <View style={{left:30, top:20}}>
+                    <FontAwesome name="arrow-right" size={25} color="white"/>
+                  </View>
                 </View>
               </TouchableHighlight>
             </View>
@@ -111,7 +170,7 @@ class PostingScreen extends Component {
           </View>
           <View style={styles.stepsAlign}>
             <View style={styles.stepSelected}/>
-            <View style={styles.stepView}/>
+            <View style={styles.stepSelected}/>
             <View style={styles.stepView}/>
           </View>
         </View>
@@ -125,7 +184,7 @@ class PostingScreen extends Component {
 
 
 
-export default (PostingScreen)
+export default connect(mapToProps, actions)(PostingScreenStep2)
 
 
 const styles = StyleSheet.create({
@@ -172,35 +231,12 @@ const styles = StyleSheet.create({
     fontSize:20,
     color:'#9E9E9E',
   },
-  fromTextInput:{
-    left:8,
-    flex:1,
-    fontSize: 20,
-    textAlign: 'center',
-    fontWeight: 'normal' ,
-    color: '#2D9CDB',
-    backgroundColor:'#F9F9F9',
-    borderRadius:5,
-    paddingTop:6,
-    paddingBottom:6,
-  },
   fromToLine:{
     width:1,
     height:22,
     top:52,
     left:49,
     backgroundColor:'#DAD5D5',
-  },
-  viewKeyboardDisappears:{
-    flex:2,
-    top:95
-  },
-  nextAlign:{
-    top:95,
-    flex:1,
-    flexDirection:'row',
-    overflow:'hidden',
-    justifyContent:'flex-end'
   },
   nextButton:{
     backgroundColor:'#007D8C',

@@ -14,17 +14,20 @@ import { StyleSheet,
 
 import origin from '../assets/origin.png';
 import destination from '../assets/destination.png';
-import leftIcon from '../assets/leftIcon.png';
-import rightIcon from '../assets/rightIcon.png';
+
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import { connect } from 'redux-zero/react';
 import actions from '../app/actions';
+
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 const mapToProps = ({ postingStep }) => ({ postingStep });
 
 const { width, height } = Dimensions.get('window');
 
-class PostingScreen extends Component {
+class PostingScreenStep1 extends Component {
 
   state = {
     originText:'Barcelona',
@@ -116,28 +119,23 @@ class PostingScreen extends Component {
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
             {this.state.destinationText.length>0 && this.state.originText.length>0 ?  (
             <View style={styles.nextButton}>
-              {this.props.postingStep<6? (
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{dismissKeyboard();moveNextStep()}}>
               <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
                 <Text style={styles.nextText}>Next</Text>
-                <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                <View style={{left:30, top:20}}>
+                  <FontAwesome name="arrow-right" size={25} color="white"/>
+                </View>
               </View>
             </TouchableHighlight>
-            ):(
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={rebootSteps}>
-              <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
-                <Text style={styles.nextText}>Next</Text>
-                <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
-              </View>
-            </TouchableHighlight>
-            )}
             </View>
             ):(
             <View style={styles.nextButtonDisabled}>
               <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' >
                 <View  style={{flexDirection:'row', flex:1, alignItems:'center'}}>
                   <Text style={styles.nextText}>Next</Text>
-                  <Image style={{alignSelf: 'center', height:25, width:25, left:30, top:20}} source={rightIcon}/>
+                  <View style={{left:30, top:20}}>
+                    <FontAwesome name="arrow-right" size={25} color="white"/>
+                  </View>
                 </View>
               </TouchableHighlight>
             </View>
@@ -159,7 +157,7 @@ class PostingScreen extends Component {
 
 
 
-export default connect(mapToProps, actions)(PostingScreen)
+export default connect(mapToProps, actions)(PostingScreenStep1)
 
 
 const styles = StyleSheet.create({

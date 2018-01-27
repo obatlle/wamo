@@ -12,14 +12,8 @@ import { StyleSheet,
   TouchableHighlight,
   KeyboardAvoidingView } from 'react-native';
 
-
-
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import PostingScreenStep1 from './PostingScreenStep1'
-import PostingScreenStep2 from './PostingScreenStep2'
-import PostingScreenStep3 from './PostingScreenStep3'
-import PostingScreenStep4 from './PostingScreenStep4'
 
 import { connect } from 'redux-zero/react';
 import actions from '../app/actions';
@@ -28,13 +22,16 @@ const mapToProps = ({ postingStep }) => ({ postingStep });
 
 const { width, height } = Dimensions.get('window');
 
-class PostingScreen extends Component {
+import Icon from 'react-native-vector-icons/Entypo';
+const plusIcon = (<Icon name="circle-with-plus" size={20} color="#900" />)
+
+
+class PostingScreenStep3 extends Component {
 
   state = {
-    originText:'Barcelona',
     destinationText:'',
-    inputTextFocus:true,
-    keyboardHeight:0
+    keyboardHeight:0,
+    availableSeats:3,
   }
 
   componentWillMount() {
@@ -65,46 +62,52 @@ class PostingScreen extends Component {
   render() {
 
     const { navigate } = this.props.navigation;
-    const { postingStep, moveNextStep, rebootSteps, movePreviousStep } = this.props;
+    const { postingStep, moveNextStep, rebootSteps } = this.props;
 
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <View style={styles.navbarView}>
-        {this.props.postingStep==1? (
-          <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> navigate('MapScreen')}>
-              <FontAwesome name="arrow-left" size={25} color="white"/>
-            </TouchableHighlight>
-          </View>
-        ):(
-          <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={movePreviousStep}>
-              <FontAwesome name="arrow-left" size={25} color="white"/>
-            </TouchableHighlight>
-          </View>
-        )}
-          <Text style={styles.screenTitle}>Posting a Trip</Text>
-          <View style={{width:25}}/>
+      <View style={styles.contentCardView}>
+        <View>
+          <Text style={styles.textHeader}>How many
+            <Text style={[styles.textHeader,styles.textOriginColor]}> seats
+              <Text style={styles.textHeader}> are you sharing?
+              </Text>
+            </Text>
+          </Text>
         </View>
-        {this.props.postingStep==1? (
-          <PostingScreenStep1 navigation={this.props.navigation}/>
-        ):(
-          <View>
-            {this.props.postingStep==2? (
-              <PostingScreenStep2 navigation={this.props.navigation}/>
-            ):(
-              <View>
-              {this.props.postingStep==3? (
-                <PostingScreenStep3 navigation={this.props.navigation}/>
-              ):(
-                <PostingScreenStep4 navigation={this.props.navigation}/>
-              )}
-              </View>
-            )}
+        <View style={{}}>
+          <View style={{top:80,height:270, flexDirection:'row', alignItems:'center', alignSelf:'center'}}>
+            <View style={{}}>
+              <Icon.Button name="circle-with-minus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats-1,0)})}}/>
+            </View>
+            <Text style={styles.seatsText}>{this.state.availableSeats}</Text>
+            <View style={{left:20}}>
+              <Icon.Button name="circle-with-plus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats+1,0)})}}/>
+            </View>
           </View>
-        )}
+        </View>
+        <View style={{ height:height-482}}>
+          <View style={{height:height-482-this.state.keyboardHeight}}>
+          </View>
+          <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
+            <View style={styles.nextButton}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
+                <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+                  <Text style={styles.nextText}>Next</Text>
+                  <View style={{left:30, top:20}}>
+                    <FontAwesome name="arrow-right" size={25} color="white"/>
+                  </View>
+                </View>
+              </TouchableHighlight>
+            </View>
+          </View>
+          <View style={styles.stepsAlign}>
+            <View style={styles.stepSelected}/>
+            <View style={styles.stepSelected}/>
+            <View style={styles.stepSelected}/>
+          </View>
+        </View>
       </View>
+
     )
   }
 
@@ -113,28 +116,10 @@ class PostingScreen extends Component {
 
 
 
-export default connect(mapToProps, actions)(PostingScreen)
+export default connect(mapToProps, actions)(PostingScreenStep3)
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    backgroundColor:'#5D287F'
-  },
-  navbarView:{
-    marginTop:20,
-    width:width,
-    height: 70,
-    flexDirection:'row',
-    alignItems:'center' ,
-    justifyContent: 'space-between'
-  },
-  screenTitle:{
-    textAlign:'center',
-    fontSize:24,
-    fontWeight:'800',
-    color:'white',
-  },
   contentCardView:{
     borderTopLeftRadius:20,
     borderTopRightRadius:20,
@@ -178,35 +163,12 @@ const styles = StyleSheet.create({
     fontSize:20,
     color:'#9E9E9E',
   },
-  fromTextInput:{
-    left:8,
-    flex:1,
-    fontSize: 20,
-    textAlign: 'center',
-    fontWeight: 'normal' ,
-    color: '#2D9CDB',
-    backgroundColor:'#F9F9F9',
-    borderRadius:5,
-    paddingTop:6,
-    paddingBottom:6,
-  },
   fromToLine:{
     width:1,
     height:22,
     top:52,
     left:49,
     backgroundColor:'#DAD5D5',
-  },
-  viewKeyboardDisappears:{
-    flex:2,
-    top:95
-  },
-  nextAlign:{
-    top:95,
-    flex:1,
-    flexDirection:'row',
-    overflow:'hidden',
-    justifyContent:'flex-end'
   },
   nextButton:{
     backgroundColor:'#007D8C',
@@ -261,5 +223,12 @@ const styles = StyleSheet.create({
     borderRadius:5,
     marginLeft:4,
     backgroundColor:'#572577'
+  },
+  seatsText:{
+    color:'#555555',
+    fontSize:186,
+    fontWeight:'600',
+    left: 12,
+    right:32
   }
 });

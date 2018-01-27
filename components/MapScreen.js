@@ -8,6 +8,8 @@ import logo from '../assets/logo.png';
 import polygon from '../assets/Polygon.png'
 import inversePolygon from '../assets/InversePolygon.png'
 
+import dismissKeyboard from 'react-native-dismiss-keyboard'
+
 const { width, height } = Dimensions.get('window');
 
 import SlidingUpPanel from 'rn-sliding-up-panel'
@@ -111,6 +113,7 @@ class LinksScreen extends Component {
   _draggedValue = new Animated.Value(-120)
 
   constructor(props) {
+    dismissKeyboard()
     super(props);
     this._renderFavoriteIcon = this._renderFavoriteIcon.bind(this)
     this._translateYAnimation = new Animated.Value(this._animatedValueY)
@@ -137,6 +140,10 @@ class LinksScreen extends Component {
 
   }
 
+  componentWillMount(){
+    dismissKeyboard()
+  }
+
 
 
   onRegionChange(region) {
@@ -151,7 +158,7 @@ class LinksScreen extends Component {
 
 
   onMapPress(e,lat,lng,lat_delta,lng_delta) {
-    Keyboard.dismiss
+    dismissKeyboard()
     try{
      this.setState({
        a: {
@@ -225,6 +232,7 @@ class LinksScreen extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    
     return (
       <View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
