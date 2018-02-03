@@ -29,7 +29,6 @@ const plusIcon = (<Icon name="circle-with-plus" size={20} color="#900" />)
 class PostingScreenStep3 extends Component {
 
   state = {
-    destinationText:'',
     keyboardHeight:0,
     availableSeats:3,
   }
@@ -77,11 +76,11 @@ class PostingScreenStep3 extends Component {
         <View style={{}}>
           <View style={{top:80,height:270, flexDirection:'row', alignItems:'center', alignSelf:'center'}}>
             <View style={{}}>
-              <Icon.Button name="circle-with-minus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats-1,0)})}}/>
+              <Icon.Button name="circle-with-minus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats-1,1)})}}/>
             </View>
             <Text style={styles.seatsText}>{this.state.availableSeats}</Text>
             <View style={{left:20}}>
-              <Icon.Button name="circle-with-plus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats+1,0)})}}/>
+              <Icon.Button name="circle-with-plus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({availableSeats: Math.max(this.state.availableSeats+1,1)})}}/>
             </View>
           </View>
         </View>

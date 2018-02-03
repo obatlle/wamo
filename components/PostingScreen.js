@@ -20,6 +20,7 @@ import PostingScreenStep1 from './PostingScreenStep1'
 import PostingScreenStep2 from './PostingScreenStep2'
 import PostingScreenStep3 from './PostingScreenStep3'
 import PostingScreenStep4 from './PostingScreenStep4'
+import PostingScreenStep5 from './PostingScreenStep5'
 
 import { connect } from 'redux-zero/react';
 import actions from '../app/actions';
@@ -102,7 +103,13 @@ class PostingScreen extends Component {
                   {this.props.postingStep==4?(
                     <PostingScreenStep4 navigation={this.props.navigation}/>
                   ):(
-                    <View style={{backgroundColor:'white', flex:1}}></View>
+                    <View>
+                    {this.props.postingStep==5?(
+                      <PostingScreenStep5 navigation={this.props.navigation}/>
+                    ):(
+                      <View style={{backgroundColor:'white', flex:1}}></View>
+                    )}
+                    </View>
                   )}
                 </View>
               )}

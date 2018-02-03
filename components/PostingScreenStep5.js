@@ -35,11 +35,16 @@ class PostingScreenStep4 extends Component {
     destinationText:'',
     keyboardHeight:0,
     savingPerPassenger:14,
+    minSavings:0.0,
+    maxSavings:0.0
   }
 
   componentWillMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    this.setState({minSavings:this.state.savingPerPassenger*0.85,
+      maxSavings: this.state.savingPerPassenger*1.15
+    })
   }
 
   componentWillUnmount () {
@@ -65,7 +70,7 @@ class PostingScreenStep4 extends Component {
   render() {
 
     const { navigate } = this.props.navigation;
-    const { postingStep, moveNextStep, rebootSteps } = this.props;
+    const { postingStep, moveNextStep, movePreviousStep, rebootSteps } = this.props;
 
     return (
       <View style={styles.contentCardView}>
@@ -74,31 +79,59 @@ class PostingScreenStep4 extends Component {
           <Text style={[styles.textHeader,{color:'#CACACA', fontWeight:'200', fontSize:18, marginTop:8}]}>Savings per passenger:</Text>
         </View>
         <Image style={{alignSelf: 'center', marginTop:50, height:230, width:230}} source={congratsImage}/>
-        <View style={{top:-160, backgroundColor:'rgba(52, 52, 52, 0)', }}>
-          <Text style={styles.currencyText}>$
-          {this.state.savingPerPassenger%1==0? (
-              <Text style={styles.savingsText}>{this.state.savingPerPassenger.toString()+'.0'}
-              </Text>
-          ):(
-              <Text style={styles.savingsText}>{this.state.savingPerPassenger.toString()}
-              </Text>
-          )}
-          </Text>
-        </View>
-        <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
-          <View style={styles.editPriceAlign}>
-            <Feather name="edit" size={12} color="#157EFB"/>
-            <Text style={styles.editPriceText}>Edit price</Text>
+        <View style={{top:-252,height:270,backgroundColor:'rgba(52, 52, 52, 0)', flexDirection:'row', alignItems:'center', alignSelf:'center'}}>
+          <View style={{}}>
+            <Icon.Button name="circle-with-minus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({savingPerPassenger: Math.max(this.state.savingPerPassenger-0.5,0)})}}/>
           </View>
-        </TouchableHighlight>
-        <View style={{ }}>
-          <View style={{height:height-575-this.state.keyboardHeight}}>
+          <Text style={styles.currencyText}>$
+            {this.state.savingPerPassenger<=this.state.minSavings? (
+              <View style={{height:70, width:180}}>
+              {this.state.savingPerPassenger%1==0? (
+                  <Text style={styles.savingsMinText}>{this.state.savingPerPassenger.toString()+'.0'}
+                  </Text>
+              ):(
+                  <Text style={styles.savingsMinText}>{this.state.savingPerPassenger.toString()}
+                  </Text>
+              )}
+              </View>
+            ):(
+              <View style={{height:70, width:180}}>
+                {this.state.savingPerPassenger>=this.state.maxSavings? (
+                  <View>
+                  {this.state.savingPerPassenger%1==0? (
+                      <Text style={styles.savingsMaxText}>{this.state.savingPerPassenger.toString()+'.0'}
+                      </Text>
+                  ):(
+                      <Text style={styles.savingsMaxText}>{this.state.savingPerPassenger.toString()}
+                      </Text>
+                  )}
+                  </View>
+                ):(
+                  <View style={{height:70, width:180}}>
+                  {this.state.savingPerPassenger%1==0? (
+                      <Text style={styles.savingsText}>{this.state.savingPerPassenger.toString()+'.0'}
+                      </Text>
+                  ):(
+                      <Text style={styles.savingsText}>{this.state.savingPerPassenger.toString()}
+                      </Text>
+                  )}
+                  </View>
+                )}
+              </View>
+            )}
+          </Text>
+          <View style={{left:20}}>
+            <Icon.Button name="circle-with-plus" size={30} color="#7dcdcd" backgroundColor="white" onPress={()=>{this.setState({savingPerPassenger: Math.max(this.state.savingPerPassenger+0.5,0)})}}/>
+          </View>
+        </View>
+        <View style={{top:-95}}>
+          <View style={{height:height-840-this.state.keyboardHeight}}>
           </View>
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
             <View style={styles.doneButton}>
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard(); rebootSteps()}}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard();movePreviousStep(); rebootSteps()}}>
                 <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
-                  <Text style={styles.doneText}>Done</Text>
+                  <Text style={styles.doneText}>Confirm</Text>
                 </View>
               </TouchableHighlight>
             </View>
@@ -204,8 +237,8 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'900',
     top:20,
-    alignSelf:'center',
-    left:35
+    textAlign:'center',
+    flex:1
   },
   stepsAlign:{
     flexDirection:'row',
@@ -242,11 +275,25 @@ const styles = StyleSheet.create({
     color:'black',
     alignSelf:'center',
   },
+  savingsMinText:{
+    textAlign:'center',
+    fontSize:70,
+    fontWeight:'900',
+    color:'#5FBB97',
+    alignSelf:'center',
+  },
+  savingsMaxText:{
+    textAlign:'center',
+    fontSize:70,
+    fontWeight:'900',
+    color:'#B33030',
+    alignSelf:'center',
+  },
   editPriceAlign:{
     flexDirection:'row',
     alignItems:'center',
     alignSelf:'center',
-    top:-60,
+    top:-100,
     flex:1,
   },
   editPriceText:{
