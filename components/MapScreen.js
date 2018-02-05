@@ -282,7 +282,7 @@ class LinksScreen extends Component {
                     placeholderTextColor ='#E7E7E7'
                     onChangeText={(text) => this.setState({text})}
                     value={this.state.text}
-                    onSubmitEditing={()=>navigate('Search')}
+                    onSubmitEditing={()=>navigate('TripList')}
                   />
                 </View>
               </View>

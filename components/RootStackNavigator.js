@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 import PostingScreen from './PostingScreen';
 import MapScreen from './MapScreen';
 import SearchScreen from './SearchScreen';
-
+import TripList from './TripList';
 
 const MainStack = StackNavigator(
   {
@@ -22,6 +22,9 @@ const MainStack = StackNavigator(
     },
     Search: {
       screen: SearchScreen,
+    },
+    TripList: {
+      screen: TripList,
     },
   },
   {
