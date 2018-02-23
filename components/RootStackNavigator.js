@@ -8,6 +8,7 @@ import PostingScreen from './PostingScreen';
 import MapScreen from './MapScreen';
 import SearchScreen from './SearchScreen';
 import TripList from './TripList';
+import TripInfo from './TripInfo';
 
 const MainStack = StackNavigator(
   {
@@ -25,6 +26,9 @@ const MainStack = StackNavigator(
     },
     TripList: {
       screen: TripList,
+    },
+    TripInfo: {
+      screen: TripInfo,
     },
   },
   {

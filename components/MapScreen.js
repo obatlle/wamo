@@ -96,7 +96,7 @@ const LATITUDE_DELTA = 2.2;
 const LONGITUDE_DELTA = 2.2;
 const SPACE = 0.01;
 
-const mapToProps = ({ postingStep }) => ({ postingStep });
+const mapToProps = ({ postingStep, originCity, destinationCity }) => ({ postingStep, originCity, destinationCity });
 
 function log(eventName, e) {
   console.log(eventName, e.nativeEvent);
@@ -146,6 +146,7 @@ class LinksScreen extends Component {
   }
 
   componentWillMount(){
+
     dismissKeyboard()
   }
 
@@ -238,6 +239,7 @@ class LinksScreen extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { destinationCity, originCity, rebootOriginCity, rebootDestinationCity, setOriginCity, setDestinationCity } = this.props;
 
     return (
       <View>
@@ -280,9 +282,9 @@ class LinksScreen extends Component {
                     style={styles.searchText}
                     placeholder='Where to?'
                     placeholderTextColor ='#E7E7E7'
-                    onChangeText={(text) => this.setState({text})}
+                    onChangeText={(text) => {this.setState({text})}}
                     value={this.state.text}
-                    onSubmitEditing={()=>navigate('TripList')}
+                    onSubmitEditing={()=>{navigate('TripList');setDestinationCity(this.state.text)}}
                   />
                 </View>
               </View>

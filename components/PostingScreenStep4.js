@@ -87,7 +87,7 @@ class PostingScreenStep4 extends Component {
         </View>
         <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
           <View style={styles.editPriceAlign}>
-            <Feather name="edit" size={12} color="#157EFB"/>
+            <Feather name="edit" size={14} color="#157EFB"/>
             <Text style={styles.editPriceText}>Edit price</Text>
           </View>
         </TouchableHighlight>
@@ -95,13 +95,13 @@ class PostingScreenStep4 extends Component {
           <View style={{height:height-575-this.state.keyboardHeight}}>
           </View>
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
-            <View style={styles.doneButton}>
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard(); rebootSteps()}}>
-                <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard(); rebootSteps()}}>
+              <View style={styles.doneButton}>
+                <View style={{flexDirection:'row', flex:1, alignItems:'center', top:-20}}>
                   <Text style={styles.doneText}>Done</Text>
                 </View>
-              </TouchableHighlight>
-            </View>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.stepsAlign}>
             <View style={styles.stepSelected}/>
@@ -252,6 +252,6 @@ const styles = StyleSheet.create({
   editPriceText:{
     left:5,
     color:'#157EFB',
-    fontSize:12
+    fontSize:14
   }
 });

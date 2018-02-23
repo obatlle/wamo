@@ -10,14 +10,18 @@ import { StyleSheet,
   Image,
   TouchableHighlight } from 'react-native';
 
+import polygon from '../assets/Polygon.png'
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CalendarList} from 'react-native-calendars';
+import Icon from 'react-native-vector-icons/Entypo';
 
 
 import { connect } from 'redux-zero/react';
 import actions from '../app/actions';
 
-const mapToProps = ({ postingStep }) => ({ postingStep });
+const mapToProps = ({ seats,tripDate, originCity, destinationCity }) => ({ seats,tripDate, originCity, destinationCity });
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,17 +31,16 @@ class TripList extends Component {
   state = {
     origin:'New York City',
     destination:'Washington DC.',
-    findingSeats:1
+    choosingDate: true,
+    choosingSeats: false,
+    currentDate: new Date(),
   }
 
-  GetSectionListItem=(item)=>{
-      Alert.alert(item.departureTime)
-  };
 
   render() {
 
     const { navigate } = this.props.navigation;
-    const { postingStep, moveNextStep, rebootSteps, movePreviousStep } = this.props;
+    const { seats, decrementSeats, incrementSeats, tripDate, setDate, rebootSeats, rebootTripDate, destinationCity, originCity, rebootOriginCity, rebootDestinationCity, setOriginCity, setDestinationCity } = this.props;
 
     var A = [{departureTime:'9:00',arrivalTime:'10:00', ratingUser:5, userImage:'https://randomuser.me/api/portraits/women/28.jpg', origin:'New York City', destination: 'Washington DC.' , price:12.50, currency:'$'}, {departureTime:'10:15',arrivalTime:'11:00',ratingUser:4, userImage:'https://randomuser.me/api/portraits/men/66.jpg', origin:'New York City', destination: 'Washington DC.', price:11.00, currency:'$'}, {departureTime:'10:20',arrivalTime:'14:25',ratingUser:3, userImage:'https://randomuser.me/api/portraits/women/18.jpg', origin:'New York City', destination: 'Washington DC.', price:12.00, currency:'$'}] ;
     var B = [{departureTime:'8:30',arrivalTime:'9:40',ratingUser:5, userImage:'https://randomuser.me/api/portraits/women/32.jpg', origin:'New York City', destination: 'Washington DC.', price:9.50, currency:'$'}, {departureTime:'8:45',arrivalTime:'10:00',ratingUser:2, userImage:'https://randomuser.me/api/portraits/women/50.jpg', origin:'New York City', destination: 'Washington DC.', price:10.50, currency:'$'}, {departureTime:'14:25',arrivalTime:'15:00',ratingUser:1, userImage:'https://randomuser.me/api/portraits/men/82.jpg', origin:'New York City', destination: 'Washington DC.', price:11.00, currency:'$'}, {departureTime:'17:15',arrivalTime:'19:00',ratingUser:5, userImage:'https://randomuser.me/api/portraits/men/37.jpg', origin:'New York City', destination: 'Washington DC.', price:12.50, currency:'$'}, {departureTime:'17:15',arrivalTime:'9:00',ratingUser:5, userImage:'https://randomuser.me/api/portraits/women/71.jpg', origin:'New York City', destination: 'Washington DC.', price:12.50, currency:'$'}] ;
@@ -48,30 +51,38 @@ class TripList extends Component {
         <StatusBar barStyle="light-content" />
         <View style={styles.navbarView}>
           <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {navigate('MapScreen')}}>
+            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {navigate('MapScreen'); rebootSeats();rebootTripDate(); rebootOriginCity(); rebootDestinationCity()}}>
               <FontAwesome name="arrow-left" size={28} color="white"/>
             </TouchableHighlight>
           </View>
           <View style={styles.originDestinationText}>
-            <Text style={styles.screenTitle}>{this.state.origin}
+            <Text style={styles.screenTitle}>{this.props.originCity}
               <Text style={styles.toText}> to
-                <Text style={styles.screenTitle}> {this.state.destination}
+                <Text style={styles.screenTitle}> {this.props.destinationCity}
                 </Text>
               </Text>
             </Text>
             <View style={styles.tripOptionsView}>
-              <View style={{flexDirection:'row'}}>
-                <FontAwesome name="calendar" size={16} color="white"/>
-                <Text style={styles.tripOptionsText}> Choose a date</Text>
-              </View>
-              <View style={{flexDirection:'row'}}>
-                <MaterialCommunityIcons name="seat-recline-normal" size={18} color="white"/>
-                {this.state.findingSeats>1?(
-                  <Text style={styles.tripOptionsText}>{this.state.findingSeats} seats</Text>
-                ):(
-                  <Text style={styles.tripOptionsText}>{this.state.findingSeats} seat</Text>
-                )}
-              </View>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {this.setState({choosingDate:true, choosingSeats:false})}}>
+                <View style={{flexDirection:'row'}}>
+                  <FontAwesome name="calendar-o" size={16} color="white"/>
+                  {this.props.tripDate==''?(
+                    <Text style={styles.tripOptionsText}> Choose a date</Text>
+                  ):(
+                    <Text style={[styles.tripOptionsText,{left:6}]}>{this.props.tripDate}</Text>
+                  )}
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {this.setState({choosingSeats:true, choosingDate:false})}}>
+                <View style={{flexDirection:'row'}}>
+                  <MaterialCommunityIcons name="seat-recline-normal" size={18} color="white"/>
+                  {this.props.seats>1?(
+                    <Text style={styles.tripOptionsText}>{this.props.seats} seats</Text>
+                  ):(
+                    <Text style={styles.tripOptionsText}>{this.props.seats} seat</Text>
+                  )}
+                </View>
+              </TouchableHighlight>
               <View style={{width:50}}>
               </View>
             </View>
@@ -148,31 +159,31 @@ class TripList extends Component {
                 </View>
                 <View style={{flexDirection:'column', top:-3}}>
                   <View style={{flexDirection:'row'}}>
-                    <Text style={styles.SectionListItemStyle} onPress={this.GetSectionListItem.bind(this, item)}>{item.departureTime}
+                    <Text style={styles.SectionListItemStyle} onPress={()=>{navigate('TripInfo')}}>{item.departureTime}
                     </Text>
-                    <Text style={styles.cityItemStyle} onPress={this.GetSectionListItem.bind(this, item)}>{item.origin}
+                    <Text style={styles.cityItemStyle} onPress={()=>{navigate('TripInfo')}}>{item.origin}
                     </Text>
                   </View>
                   <View style={{flexDirection:'row'}}>
-                    <Text style={styles.SectionListItemStyle} onPress={this.GetSectionListItem.bind(this, item)}>{item.arrivalTime}
+                    <Text style={styles.SectionListItemStyle} onPress={()=>{navigate('TripInfo')}}>{item.arrivalTime}
                     </Text>
-                    <Text style={styles.cityItemStyle} onPress={this.GetSectionListItem.bind(this, item)}>{item.destination}
+                    <Text style={styles.cityItemStyle} onPress={()=>{navigate('TripInfo')}}>{item.destination}
                     </Text>
                   </View>
                 </View>
                 <View style={{width:70, justifyContent:'center'}}>
-                  <Text style={styles.currencyText} onPress={this.GetSectionListItem.bind(this, item)}>{item.currency}
+                  <Text style={styles.currencyText} onPress={()=>{navigate('TripInfo')}}>{item.currency}
                     {item.price%1==0? (
-                      <Text style={styles.priceText} onPress={this.GetSectionListItem.bind(this, item)}>{item.price.toString()+'.0'}
+                      <Text style={styles.priceText} onPress={()=>{navigate('TripInfo')}}>{item.price.toString()+'.0'}
                       </Text>
                     ):(
-                      <Text style={styles.priceText} onPress={this.GetSectionListItem.bind(this, item)}>{item.price.toString()}
+                      <Text style={styles.priceText} onPress={()=>{navigate('TripInfo')}}>{item.price.toString()}
                       </Text>
                     )}
                   </Text>
                 </View>
-                <View style={{justifyContent:'center', top:-4}}>
-                  <MaterialCommunityIcons name="chevron-right" size={25} color="#E7E7E7"/>
+                <View style={{justifyContent:'center', top:-4}} >
+                  <MaterialCommunityIcons name="chevron-right" size={25} color="#E7E7E7" onPress={(x)=>{navigate('TripInfo')}}/>
                 </View>
               </View>
               <View style={{backgroundColor:'#E7E7E7', width:width*0.8, height:0.5, alignSelf:'center'}}>
@@ -181,12 +192,81 @@ class TripList extends Component {
             }
             keyExtractor={(item,index)=>index}
            />
-           <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('PostingScreen');moveNextStep()}}>
+           {this.state.choosingDate?(
+             <View style={{width:width, height: height, position: 'absolute', backgroundColor:'black',opacity: 0.7}}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{this.setState({choosingDate:false})}}>
+                <View style={{height:height, width:width}}>
+                </View>
+              </TouchableHighlight>
+             </View>
+           ):(
+             <View>
+             </View>
+           )}
+           {this.state.choosingDate?(
+             <View style={{width:width*0.95, height:370, backgroundColor:'#FCC745', position: 'absolute',top:8,alignSelf: 'center',borderTopLeftRadius:10, borderTopRightRadius:10,}}>
+              <Text style={{color:'white', fontSize:20, fontWeight:'700', textAlign:'center', margin:4}}>Choose a date</Text>
+               <CalendarList
+                 style={{margin: 2,
+                         height:370}}
+                 minDate={this.state.currentDate}
+                 // Callback which gets executed when visible months change in scroll view. Default = undefined
+                 onVisibleMonthsChange={(months) => {console.log('now these months are visible', months);}}
+                 // Max amount of months allowed to scroll to the past. Default = 50
+                 pastScrollRange={0}
+                 // Max amount of months allowed to scroll to the future. Default = 50
+                 futureScrollRange={12}
+                 // Enable or disable scrolling of calendar list
+                 scrollEnabled={true}
+                 // Enable or disable vertical scroll indicator. Default = false
+                 showScrollIndicator={true}
+                 onDayPress={(day) => {setDate(day);this.setState({choosingDate: false});}}
+                 markedDates={{[this.props.tripDate]: {selected: true}}}
+                 theme={{
+                   selectedDayBackgroundColor: '#007D8C',
+                   selectedDayTextColor: 'white',
+                   todayTextColor: '#FCC745',
+                 }}
+               />
+             </View>
+           ):(
+             <View>
+             </View>
+           )}
+           {this.state.choosingSeats?(
+             <View style={{width:width, height: height, position: 'absolute', backgroundColor:'black',opacity: 0.7,}}>
+              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{this.setState({choosingSeats:false})}}>
+                <View style={{height:height, width:width}}>
+                </View>
+              </TouchableHighlight>
+             </View>
+           ):(
+             <View>
+             </View>
+           )}
+           {this.state.choosingSeats?(
+             <View style={{width:width*0.95, height:200, backgroundColor:'#FCC745', position: 'absolute',top:8,alignSelf: 'center',borderTopLeftRadius:10, borderTopRightRadius:10}}>
+              <Text style={{color:'white', fontSize:20, fontWeight:'700', textAlign:'center', margin:4}}>Choose how many seats</Text>
+              <View style={{backgroundColor:'white', width:width*0.95-4,flex:1, margin:2, flexDirection:'row', justifyContent:'center', alignSelf:'center', alignItems:'center'}}>
+                <View style={{}}>
+                  <Icon.Button name="circle-with-minus" size={30} color="#7dcdcd" backgroundColor="white" onPress={decrementSeats}/>
+                </View>
+                <Text style={styles.seatsText}>{this.props.seats}</Text>
+                <View style={{left:20}}>
+                  <Icon.Button name="circle-with-plus" size={30} color="#7dcdcd" backgroundColor="white" onPress={incrementSeats}/>
+                </View>
+              </View>
+             </View>
+           ):(
+             <View>
+             </View>
+           )}
+           <TouchableHighlight  underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('PostingScreen');moveNextStep();rebootSeats();rebootTripDate();}}>
              <View style={styles.addTripAlign}>
                <View style={styles.addTripShadow}>
                  <View style={styles.addTripView}>
                    <Text style={styles.addTripText}>Post a trip to
-                     <Text style={[styles.addTripText,{color:'white'}]}> {this.state.destination}
+                     <Text style={[styles.addTripText,{color:'white'}]}> {this.props.destinationCity}
                      </Text>
                    </Text>
                  </View>
@@ -195,6 +275,18 @@ class TripList extends Component {
            </TouchableHighlight>
           </View>
         </View>
+        {this.state.choosingDate?(
+          <Image style={{alignSelf: 'center', top:92, left:85, position:'absolute'}} source={polygon}/>
+        ):(
+          <View>
+          </View>
+        )}
+        {this.state.choosingSeats?(
+          <Image style={{alignSelf: 'center', top:92, left:230, position:'absolute'}} source={polygon}/>
+        ):(
+          <View>
+          </View>
+        )}
       </View>
     )
   }
@@ -223,12 +315,14 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'400',
     color:'#14BBF2',
+
   },
   screenTitle:{
-    textAlign:'center',
+    textAlign:'left',
     fontSize:20,
     fontWeight:'600',
     color:'white',
+
   },
   tripOptionsView:{
     flexDirection:'row',
@@ -237,7 +331,9 @@ const styles = StyleSheet.create({
   },
   originDestinationText:{
     top: -5,
-    flexDirection:'column'
+    left: 6,
+    flexDirection:'column',
+    width: width-60
   },
   contentCardView:{
     borderTopLeftRadius:20,
@@ -251,14 +347,14 @@ const styles = StyleSheet.create({
     color:'#FDC848'
   },
   SectionHeaderStyle:{
-    fontSize : 24,
-    fontWeight:'900',
+    fontSize : 21,
+    fontWeight:'800',
     color: 'gray',
     paddingLeft:20,
     backgroundColor:'white',
     width:width,
-    paddingBottom:8,
-    paddingTop : 8
+    paddingBottom:6,
+    paddingTop : 6
   },
   SectionListItemStyle:{
     fontSize : 18,
@@ -343,5 +439,12 @@ const styles = StyleSheet.create({
       fontSize: 36,
       fontWeight: 'normal' ,
       color: '#7dcdcd'
+    },
+    seatsText:{
+      color:'#555555',
+      fontSize:80,
+      fontWeight:'600',
+      left: 12,
+      right:32
     },
 });

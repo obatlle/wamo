@@ -128,13 +128,13 @@ class PostingScreenStep4 extends Component {
           <View style={{height:height-840-this.state.keyboardHeight}}>
           </View>
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
-            <View style={styles.doneButton}>
-              <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard();movePreviousStep(); rebootSteps()}}>
-                <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
+            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=>{navigate('MapScreen'); dismissKeyboard();movePreviousStep(); rebootSteps()}}>
+              <View style={styles.doneButton}>
+                <View style={{flexDirection:'row', flex:1, alignItems:'center', top:-20}}>
                   <Text style={styles.doneText}>Confirm</Text>
                 </View>
-              </TouchableHighlight>
-            </View>
+              </View>
+            </TouchableHighlight>
           </View>
           <View style={styles.stepsAlign}>
             <View style={styles.stepSelected}/>
@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+    overflow: 'hidden',
   },
   nextButtonDisabled:{
     backgroundColor:'#EDEDED',

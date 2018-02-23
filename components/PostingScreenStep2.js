@@ -145,16 +145,16 @@ class PostingScreenStep2 extends Component {
           </View>
           <View style={{ justifyContent:'flex-end', flexDirection:'row', marginBottom:4}}>
             {this.state.markedDays.length>0 ?  (
-            <View style={styles.nextButton}>
               <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={moveNextStep}>
-                <View style={{flexDirection:'row', flex:1, alignItems:'center'}}>
-                  <Text style={styles.nextText}>Next</Text>
-                  <View style={{left:30, top:20}}>
-                    <FontAwesome name="arrow-right" size={25} color="white"/>
+                <View style={styles.nextButton}>
+                  <View style={{flexDirection:'row', flex:1, alignItems:'center', top:-20}}>
+                    <Text style={styles.nextText}>Next</Text>
+                    <View style={{left:30, top:20}}>
+                      <FontAwesome name="arrow-right" size={25} color="white"/>
+                    </View>
                   </View>
                 </View>
               </TouchableHighlight>
-            </View>
             ):(
             <View style={styles.nextButtonDisabled}>
               <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' >

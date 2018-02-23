@@ -73,14 +73,14 @@ class PostingScreen extends Component {
         <StatusBar barStyle="light-content" />
         <View style={styles.navbarView}>
         {this.props.postingStep==1? (
-          <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={()=> {movePreviousStep();navigate('MapScreen')}}>
+          <View style={{marginLeft:15}}>
+            <TouchableHighlight style={{width:80, height:50, justifyContent:'center'}} underlayColor='rgba(52, 52, 52,0)' onPress={()=> {movePreviousStep();navigate('MapScreen')}}>
               <FontAwesome name="arrow-left" size={25} color="white"/>
             </TouchableHighlight>
           </View>
         ):(
-          <View style={{marginLeft:10}}>
-            <TouchableHighlight underlayColor='rgba(52, 52, 52, 0)' onPress={movePreviousStep}>
+          <View style={{marginLeft:15}}>
+            <TouchableHighlight style={{width:80, height:50, justifyContent:'center'}} underlayColor='rgba(52, 52, 52, 0)' onPress={movePreviousStep}>
               <FontAwesome name="arrow-left" size={25} color="white"/>
             </TouchableHighlight>
           </View>
@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     fontSize:24,
     fontWeight:'800',
     color:'white',
+    left:-30
   },
   contentCardView:{
     borderTopLeftRadius:20,
